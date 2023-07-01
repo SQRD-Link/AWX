@@ -1,7 +1,7 @@
 ---
   - name: Update Almalinux.
 # Ansible Playbook will run on the Localhost where AWX is installed
-    hosts: Alma
+    hosts: netbox:AWX:localflix:zabbix
     tasks:
 # Below task will execute the list of directories and files present
     - name: update
