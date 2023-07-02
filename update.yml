@@ -1,12 +1,11 @@
 ---
-  - name: "Playing with Ansible."
+  - name: Update Almalinux.
 # Ansible Playbook will run on the Localhost where AWX is installed
-    hosts: localhost
-    connection: local
+    hosts: 10.10.100.6
     tasks:
 # Below task will execute the list of directories and files present
-    - name: "just execute a ls -lrt command"
-      shell: "ls -lrt"
-      register: "output"
+    - name: update
+      shell: dnf update && dnf upgrade
+      register: output
 # The Output of the above task will be displayed on the Screen
     - debug: var=output.stdout_lines
