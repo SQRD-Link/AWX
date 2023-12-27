@@ -5,5 +5,5 @@ token: 669263d51c8bb6661cdd3d1ffacd55792ba05c06
 validate_certs: false
 config_context: true
 fetch_all: true
-#compose:
- #ansible_network_os: platform.slug
+compose:
+ ansible_network_os: platform.slug
