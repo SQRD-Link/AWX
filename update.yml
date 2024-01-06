@@ -31,7 +31,7 @@
   tasks:
     - name: Retrieve licenses from Netbox
       uri:
-        url: http://netbox.sqrd.lab/api/virtualization/virtual-machines/
+        url: http://netbox.sqrd.lab/api/dcim/device-roles/?name=VM
         method: GET
         validate_certs: no
         headers:
