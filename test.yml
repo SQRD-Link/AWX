@@ -1,12 +1,10 @@
 ---
-- hosts: all
-  gather_facts: false
-  connection: ansible.netcommon.network_cli
+- name: Intro to Ansible Playbooks
+  hosts: all
 
-- name: FETCH MACHINES FROM NETBOX
-  run_once: true
-  delegate_to: localhost
-  uri:
-    url: "http://netbox.sqrd.lab/api/dcim/platforms/1"
-    method: GET
-  register: sites
+  tasks:
+  - name: upgrade all packages
+    dnf:
+      name: "*"
+      state: latest
+    become: yes      
