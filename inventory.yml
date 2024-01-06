@@ -1,6 +1,6 @@
 ---
 plugin: netbox.netbox.nb_inventory
-api_endpoint: http://10.10.10.7
+api_endpoint: http://netbox.sqrd.link
 token: 669263d51c8bb6661cdd3d1ffacd55792ba05c06
 validate_certs: False
 config_context: True

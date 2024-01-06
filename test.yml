@@ -1,8 +1,12 @@
-bigip_cli_alias:
-  name:  # required. Specifies the name of the alias.
-  scope: private # not required. choices: private;shared. The scope of the alias; whether it is shared on the system, or usable only for the user who created it.
-  command:  # not required. The command to alias.
-  description:  # not required. Description of the alias.
-  partition: Common # not required. Device partition to manage resources on. This parameter is disregarded when the C(scope) is C(private).
-  state: present # not required. choices: present;absent. When C(present), ensures that the resource exists. When C(absent), ensures the resource is removed.
-  provider:  # not required. A dict object containing connection details.
+---
+- hosts: all
+  gather_facts: false
+  connection: ansible.netcommon.network_cli
+
+- name: FETCH MACHINES FROM NETBOX
+  run_once: true
+  delegate_to: localhost
+  uri:
+    url: "http://netbox.sqrd.lab/api/dcim/platforms/1"
+    method: GET
+  register: sites
