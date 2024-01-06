@@ -5,7 +5,7 @@
   tasks:
     - name: Find Shared servers
       set_fact:
-        common_hosts: "{{ groups['device_roles_VM'] }}"
+        common_hosts: "{{ groups['device-roles-1'] }}"
 
     - name: Add hosts to new groups
       set_fact:
