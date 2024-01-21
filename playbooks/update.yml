@@ -10,7 +10,7 @@
       vars:
         netbox_api_key: 669263d51c8bb6661cdd3d1ffacd55792ba05c06
       tasks:
-        - name: Retrieve licenses from Netbox
+         -name: Retrieve licenses from Netbox
           uri:
             url: http://netbox.sqrd.lab/api/dcim/device-roles/1/
             method: GET
