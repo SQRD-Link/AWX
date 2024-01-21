@@ -11,17 +11,17 @@
         netbox_api_key: 669263d51c8bb6661cdd3d1ffacd55792ba05c06
       tasks:
          -name: Retrieve licenses from Netbox
-          uri:
-            url: http://netbox.sqrd.lab/api/dcim/device-roles/1/
-            method: GET
-            validate_certs: no
-            headers:
-              Authorization: Token {{netbox_api_key}}
-              Content-Type: "application/json"
-            status_code: 200
-          register: netbox_api_output
-          delegate_to: 127.0.0.1
-          run_once: true
+         uri:
+          url: http://netbox.sqrd.lab/api/dcim/device-roles/1/
+          method: GET
+          validate_certs: no
+          headers:
+            Authorization: Token {{netbox_api_key}}
+            Content-Type: "application/json"
+          status_code: 200
+         register: netbox_api_output
+         delegate_to: 127.0.0.1
+         run_once: true
 #
 #   - name: Get Plesk version from Netbox
 #     set_fact:
