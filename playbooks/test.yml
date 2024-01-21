@@ -1,0 +1,10 @@
+---
+- name: Intro to Ansible Playbooks
+  hosts: all
+
+  tasks:
+  - name: upgrade all packages
+    dnf:
+      name: "*"
+      state: latest
+    become: yes      
