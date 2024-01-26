@@ -2,7 +2,6 @@
 - name: Create user paulus
   hosts: all
 
-
   tasks:
     - name: Create user paulus on rhel machines
       tags: always
