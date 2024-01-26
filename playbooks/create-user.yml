@@ -3,6 +3,12 @@
   hosts: all
 
   tasks:
+    - name: check OS version
+      debug: var=ansible_os_family
+
+    - block:     # for redhat
+  
+  tasks:
     - name: Create user paulus
       tags: always
       user: 
@@ -24,3 +30,5 @@
         state: present
         mode: 0440
         create: yes
+
+        when: ansible_os_family == "RedHat"
