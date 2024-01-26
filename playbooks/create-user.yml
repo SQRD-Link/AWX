@@ -25,5 +25,3 @@
         state: present
         mode: 0440
         create: yes
-
-        when: ansible_os_family == "RedHat"

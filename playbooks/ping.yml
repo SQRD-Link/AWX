@@ -6,10 +6,7 @@
     - name: check OS version
       debug: var=ansible_os_family
 
-    - block:     # for redhat
- 
   tasks:
     - name: Example from an Ansible Playbook
       ansible.builtin.ping:
-
-        when: ansible_os_family == "RedHat"      
+      when: ansible_facts['os_family'] == "RedHat"
