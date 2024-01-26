@@ -2,12 +2,7 @@
 - name: Create user paulus
   hosts: all
 
-  tasks:
-    - name: check OS version
-      debug: var=ansible_os_family
 
-    - block:     # for redhat
-  
   tasks:
     - name: Create user paulus
       tags: always
