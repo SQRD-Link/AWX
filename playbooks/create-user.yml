@@ -4,12 +4,20 @@
 
 
   tasks:
-    - name: Create user paulus
+    - name: Create user paulus on rhel machines
       tags: always
       user: 
         name: paulus
         group: wheel
       when: ansible_facts['os_family'] == "RedHat"        
+
+  tasks:
+    - name: Create user paulus on Debian machines
+      tags: always
+      user: 
+        name: paulus
+        group: root
+      when: ansible_facts['os_family'] == "Debian"         
 
     - name: add ssh key for paulus
       tags: always
