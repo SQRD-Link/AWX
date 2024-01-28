@@ -1,5 +1,5 @@
 ---
-- name: bootstrap new host
+- name: deploy new machine
   hosts: "{{ managed_vps }}"
 
   tasks:
