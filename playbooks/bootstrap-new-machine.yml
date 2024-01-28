@@ -1,5 +1,5 @@
 ---
-- name: deploy new machine
+- name: bootstrap new machine
   hosts: "{{ hostname }}"
 
   tasks:
