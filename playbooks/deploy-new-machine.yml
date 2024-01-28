@@ -1,6 +1,6 @@
 ---
-- name: update hosts
-  hosts: all
+- name: bootstrap new host
+  hosts: "{{ managed_vps }}"
 
   tasks:
   - name: upgrade all packages using dnf
