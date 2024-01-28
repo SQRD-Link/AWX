@@ -1,6 +1,6 @@
 ---
 - name: deploy new machine
-  hosts: "{{ managed_vps }}"
+  hosts: "{{ hostname }}"
 
   tasks:
   - name: upgrade all packages using dnf
