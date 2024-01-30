@@ -1,0 +1,127 @@
+---
+- name: Build_VMs_with_Ansibles
+  vars:
+    vm_name: **SNIP**
+    proxmox_vm_id: **SNIP**
+    # - proxmox_vlan_id: 'tag=9' Removed. part of old implementation of vlan switching using qm commands
+    # - proxmox_vlan_id: '946' removed and added to vars prompt
+    proxmox_user: root@pam
+    proxmox_pass: **SNIP**
+    proxmox_api_target: pve0.localdomain
+    proxmox_deploy_target: pve0
+    proxmox_clone_target: rocky-cloud
+  hosts: pve0.localdomain
+  vars_prompt:
+    - name: node_migration
+      prompt: "Do you want to migrate this host (yes/no)?"
+      private: false
+    - name: node_migration_additional
+      prompt: "where do you want to migrate this host (pve1/pve2)?"
+      private: false
+    - name: proxmox_vlan_id
+      prompt: "What Vlan? Enter Number only:(0-Core_Infra/2- Bastion_Security/3-Workstations/5-IOT/6-outofbandmgmt/8-Storage/99-DMZ/9-Secondary_Services)"
+      private: false
+  tasks:
+  # Create new VM by cloning
+    - name: Create new VM from clone specific VMID
+      community.general.proxmox_kvm:
+        node: "{{ proxmox_deploy_target }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_pass }}"
+        api_host: "{{ proxmox_api_target }}"
+        name: "{{ vm_name }}"
+        clone: rocky-cloud
+        newid: "{{ proxmox_vm_id }}"
+        state: present
+    # Update clone after creation
+    - name: Update cloned VM with new Cloud-init
+      community.general.proxmox_kvm:
+        node: "{{ proxmox_deploy_target }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_pass }}"
+        api_host: "{{ proxmox_api_target }}"
+        name: "{{ vm_name }}"
+        agent: enabled=1
+        ciuser: **SNIP**
+        cipassword: **SNIP**
+        sshkeys: "{{  lookup('ansible.builtin.file', '/home/linuxdev/.ssh/id_rsa.pub') }}"
+        searchdomains: 'localdomain'
+        nameservers: **SNIP**
+        update: true
+    # We chill here for a few seconds so that the vm has time to get a VMID. It breaks otherwise.
+    - name: Sleep for 5 seconds to wait for VMID:Then continue with play
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+    # We impliment a better vlan asignment procedure using defined modules instead of hacking it togeather
+    # The when conditional below depends on toplogy. In my case, all core infra (e.g. Proxmox) is in an untagged interface therfore 0 is a placeholder.
+    # I do not use vlan 0 or 1 in my lab
+    # If I release this, the user should either remove the when conditional check below and allow any vlan number above in the vars_prompt or change it.
+    - name: Vlan Assignment
+      when: proxmox_vlan_id != '0'
+      community.general.proxmox_nic:
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_pass }}"
+        api_host: "{{ proxmox_api_target }}"
+        vmid: "{{ proxmox_vm_id }}"
+        interface: net0
+        bridge: vmbr0
+        tag: "{{ proxmox_vlan_id }}"
+      register: vlanasign_result
+    # We do a little hack so we can move the vm to the vlan
+   # - name: VLAN Assignment
+   #   ansible.builtin.shell: # noqa: command-instead-of-shell
+   #     cmd: qm set "{{ proxmox_vm_id }}" -net0 "virtio,bridge=vmbr0,"{{ proxmox_vlan_id }}""
+   #   register: vlanasign_result
+   #   changed_when: "'update' in vlanasign_result.stdout"
+# Show shell command output for move the vm to the vlan error check
+    - name: Debug move the vm to the vlan output
+      ansible.builtin.debug:
+        var: vlanasign_result
+# Grab Mac address of VM prior to migration
+    - name: Grab Mac address to prep for static dhcp asignment
+      ansible.builtin.shell: # noqa: command-instead-of-shell risky-shell-pipe
+        cmd: qm config "{{ proxmox_vm_id }}" | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'
+      register: vm_mac_address
+      changed_when: true
+# Show shell command output for vm mac address pull
+    - name: Debug Grab Mac address to prep for static dhcp asignment
+      ansible.builtin.debug:
+        var: vm_mac_address.stdout
+# Do node migration if asked
+    - name: Include node migration if you answered 'yes'
+      when: node_migration == 'yes'
+      ansible.builtin.shell: # noqa: command-instead-of-shell
+        cmd: qm migrate "{{ proxmox_vm_id }}" "{{ node_migration_additional }}"
+      register: nodemigration_result
+      changed_when: "'successfully' in nodemigration_result.stdout"
+# Show shell command output for vm node migration
+    - name: Debug vm node migration output
+      ansible.builtin.debug:
+        var: nodemigration_result
+# We chill here for a few seconds so that the vm has time to migrate.
+    - name: Sleep for 20 seconds to wait for migration:Then continue with play
+      ansible.builtin.wait_for:
+        timeout: 20
+      delegate_to: localhost
+    # Start the VM
+    - name: Start VM
+      community.general.proxmox_kvm:
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_pass }}"
+        api_host: "{{ proxmox_api_target }}"
+        name: "{{ vm_name }}"
+        node: "{{ proxmox_deploy_target }}"
+        state: started
+    - name: Get VM state
+      community.general.proxmox_kvm:
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_pass }}"
+        api_host: "{{ proxmox_api_target }}"
+        name: "{{ vm_name }}"
+        node: "{{ proxmox_deploy_target }}"
+        state: current
+      register: state
+    - name: Debug vm state
+      ansible.builtin.debug:
+        var: state
