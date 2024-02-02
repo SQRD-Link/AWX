@@ -1,0 +1,6 @@
+---
+- name: ansible-vault test playbook
+  hosts: localhost
+  tasks:
+    - name: create vault
+      shell: ansible-vault create SQRD.yml 
