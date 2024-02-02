@@ -1,5 +1,4 @@
 ---
----
 - name: ansible-vault test playbook
   hosts: localhost
   vars_files:
