@@ -1,6 +1,8 @@
 ---
 - name: bootstrap new machine
   hosts: "{{ hostname }}"
+  vars_files:
+   - SQRD.yml  
 
   tasks:
   - name: upgrade all packages using dnf
@@ -33,7 +35,7 @@
     tags: always
     authorized_key:
       user: paulus # required. The username on the remote host whose authorized_keys file will be modified.
-      key:  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIlupy9c8ewWvvF2w3Y3RblR7+cdtfdfn7Bn627CClqS paulus"
+      key:  "{{ssh-key-paulus}}"
       state: present # not required. choices: absent;present. Whether the given key (with the given key_options) should or should not be in the file.
   - name: Add user paulus to sudo
     lineinfile:
