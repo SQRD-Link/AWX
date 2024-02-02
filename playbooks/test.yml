@@ -6,4 +6,4 @@
   tasks:
     - name: show vault encrypted variables
       debug: 
-        msg: "{{link-password}}"
+        msg: "{{test}}"
