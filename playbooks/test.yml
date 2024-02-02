@@ -1,6 +1,10 @@
 ---
+---
 - name: ansible-vault test playbook
   hosts: localhost
+  vars_files:
+   - SQRD.yml
   tasks:
-    - name: create vault
-      shell: ansible-vault create SQRD.yml 
+    - name: show vault encrypted variables
+      debug: 
+        msg: "{{link-password}}"
