@@ -64,7 +64,6 @@
        - restart ssh
        
   handlers:
-
   - name: restart ssh
     service:
        name=sshd
