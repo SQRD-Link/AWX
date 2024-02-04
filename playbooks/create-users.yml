@@ -1,6 +1,6 @@
 ---
 - name: Create users
-  hosts: test.sqrd.link
+  hosts: awx.sqrd.lab
   vars_files:
    - SQRD.yml
 
