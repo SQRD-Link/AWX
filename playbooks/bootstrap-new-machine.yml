@@ -25,18 +25,21 @@
       name: paulus
       group: wheel
     when: ansible_facts['os_family'] == "RedHat"        
+
   - name: Create user paulus on Debian machines
     tags: always
     user: 
       name: paulus
       group: root
     when: ansible_facts['os_family'] == "Debian"         
+
   - name: add ssh key for paulus
     tags: always
     authorized_key:
       user: paulus # required. The username on the remote host whose authorized_keys file will be modified.
       key:  "{{ssh_key_paulus}}"
       state: present # not required. choices: absent;present. Whether the given key (with the given key_options) should or should not be in the file.
+
   - name: Add user paulus to sudo
     lineinfile:
       path: /etc/sudoers.d/paulus
@@ -44,6 +47,35 @@
       state: present
       mode: 0440
       create: yes
+
+  - name: Create user link on rhel machines
+    tags: always
+    user: 
+      name: link
+      group: wheel
+    when: ansible_facts['os_family'] == "RedHat" 
+
+  - name: Create user link on Debian machines
+    tags: always
+    user: 
+      name: link
+      group: root
+    when: ansible_facts['os_family'] == "Debian" 
+
+  - name: add ssh key for link
+    tags: always
+    authorized_key:
+      user: link # required. The username on the remote host whose authorized_keys file will be modified.
+      key:  "{{ssh_key_link}}"
+      state: present # not required. choices: absent;present. Whether the given key (with the given key_options) should or should not be in the file.
+
+  - name: Add user link to sudo
+    lineinfile:
+      path: /etc/sudoers.d/link
+      line: 'link ALL=(ALL) NOPASSWD: ALL'
+      state: present
+      mode: 0440
+      create: yes         
 
   - name: Disable Password Authentication
     lineinfile:
