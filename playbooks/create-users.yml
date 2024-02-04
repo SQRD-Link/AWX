@@ -1,6 +1,6 @@
 ---
 - name: Create user paulus
-  hosts: all
+  hosts: test.sqrd.link
   vars_files:
    - SQRD.yml
 
