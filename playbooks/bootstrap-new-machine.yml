@@ -61,7 +61,9 @@
           state=present
           backup=yes
     notify:
-       - restart sshhandlers:
+       - restart ssh
+       
+  handlers:
 
   - name: restart ssh
     service:
