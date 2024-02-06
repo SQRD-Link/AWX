@@ -1,3 +1,5 @@
 ---
 collections:
   - netbox.netbox
+  - pynetbox.pynetbox
+
