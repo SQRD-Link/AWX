@@ -7,8 +7,8 @@
   tasks:
     - name: Create device within NetBox with only required information
       netbox.netbox.netbox_device:
-        netbox_url: http://netbox.local
-        netbox_token: thisIsMyToken
+        netbox_url: http://netbox.sqrd.lab
+        netbox_token: 669263d51c8bb6661cdd3d1ffacd55792ba05c06
         data:
           name: Test Device
           device_type: C9410R
