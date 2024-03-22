@@ -40,9 +40,6 @@
       url: https://github.com/docker/compose/releases/download/v2.26.0/docker-compose-linux-x86_64
       dest: /usr/bin/docker-compose
       mode: 0755
-    when:
-      - docker_compose_check.msg is defined
-      - docker_compose_check.msg.find('No such file or directory') != -1
 
   handlers:
     - name: Start and enable docker
