@@ -1,0 +1,41 @@
+---
+- name: Install Docker
+  hosts: "{{ hostname }}"
+  vars_files:
+   - SQRD.yml  
+
+  tasks:
+  - name: upgrade all packages using dnf
+    dnf:
+      name: "*"
+      state: latest
+    become: yes      
+    when: ansible_facts['os_family'] == "RedHat"
+
+  - name: Set up docker repository
+    shell: |
+      dnf install -y yum-utils
+      yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    args:
+      warn: no
+
+  - name: Install the latest version of Docker Engine and containerd
+    dnf:
+      name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    notify: Start and enable docker
+
+  - name: install pip
+    shell:
+      yum install python3-pip -y
+      pip install docker-compose
+
+  handlers:
+    - name: Start and enable docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes    
+
