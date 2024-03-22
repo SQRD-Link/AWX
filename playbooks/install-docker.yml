@@ -35,11 +35,6 @@
     shell:
       yum install python3-pip -y
 
-  - name: Check if Docker Compose is installed
-    command: docker-compose --version
-    register: docker_compose_check
-    ignore_errors: yes
-
   - name: Download and install Docker Compose
     get_url:
       url: https://github.com/docker/compose/releases/download/v2.26.0/docker-compose-linux-x86_64
